@@ -10,7 +10,8 @@ COMPLETED = 'Completed'
 def init_table():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    query = open('./sql/create_items.sql', 'r').read()
+    query = open('db/sql/create_items.sql', 'r').read()
+    print(query)
     c.execute(query)
     conn.commit()
     c.close()
@@ -27,6 +28,18 @@ def add_to_list(item):
         c.close()
         conn.close()
         return {"item": item, "status": NOT_STARTED}
+    except Exception as e:
+        print('Error :: ', e)
+        return None
+
+
+def get_all_items():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('select * from items')
+        rows = c.fetchall()
+        return {"count": len(rows), "items": rows }
     except Exception as e:
         print('Error :: ', e)
         return None
