@@ -20,11 +20,15 @@ def query_sqlite(query, query_type='execute', **kwargs):
         if query_type == 'execute':
             if kwargs.get('item'):
                 c.execute(query, kwargs.get('item'))
+                print('item')
             else:
                 c.execute(query)
         if query_type == 'fetchall':
             c.execute(query)
             result = c.fetchall()
+        if query_type == 'fetchone':
+            c.execute(query)
+            result = c.fetchone()[0]
     conn.commit()
     return result
 
@@ -49,10 +53,7 @@ def get_all_items():
 
 def get_item_status(item):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute(f"select status from items where item='{item}'")
-        status = c.fetchone()[0]
+        status = query_sqlite(f"select status from items where item='{item}'")
         return status
     except Exception as e:
         print('Error :: ', e)
@@ -70,7 +71,7 @@ def update_status(item, status):
         print("Invalid Status: " + status)
         return None
     try:
-        query_sqlite('update items set status=? where item=?', (status, item))
+        query_sqlite('update items set status=? where item=?', item=(status, item))
         return {item: status}
     except Exception as e:
         print('Error :: ', e)
