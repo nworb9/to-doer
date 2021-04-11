@@ -1,10 +1,24 @@
 <script>
 	export let name;
+	let todoItems = [
+		{'name': 'make to-do app', 'done': true},
+		{'name': 'make second item', 'done': false}
+	];
+	let inputText = 'New item';
+	function handleClick() {
+		if (inputText == 'New item') return
+		todoItems = [...todoItems, {'name': inputText, 'done': false}]
+	}
 </script>
 
 <main>
 	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<input bind:value={inputText}>
+	<button on:click={handleClick}>Add item</button>
+	<ul>{#each todoItems as item}
+		<li>{item.name}<input type=checkbox bind:checked={item.done}></li>
+	{/each}
+	</ul>
 </main>
 
 <style>
@@ -16,7 +30,7 @@
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: #9c5138;
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
